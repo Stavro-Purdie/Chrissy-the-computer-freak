@@ -175,27 +175,19 @@ while True:
         print(values['-STATUS-'])
     
     if event == '-RESPONSE-':
-        # Capture the response text from the popup
+        # Capture the response text from the AI
         response_text = values['-RESPONSE-']
         
         # Log the raw response for debugging
-        print("Response Text from Popup:", response_text)
+        print("Response Text from AI:", response_text)
         
-        # 1. Send the response to the popup window
-        response_layout = [
-            [sg.Multiline(response_text, size=(60, 20), disabled=True)],
-            [sg.Button('Close')]
-        ]
-        response_window = sg.Window('Chat Response', response_layout)
-        response_event, _ = response_window.read(close=True)
-
-        # 2. Send the response to the tag classification system (to detect tags)
+        # 1. Send the response to the tag classification system (to detect tags)
         tags = re.findall(r'(mouse_jiggle|ringing_noise|windows_noise|click|popup_window|key_press|random_key_press)', response_text, re.IGNORECASE)
         
         # Log the detected tags
         print("Detected Tags:", tags)
         
-        # 3. Trigger corresponding actions based on detected tags
+        # 2. Trigger corresponding actions based on detected tags instantly
         if 'mouse_jiggle' in tags:
             threading.Thread(target=mouse_jiggle, daemon=True).start()
         if 'ringing_noise' in tags:
@@ -226,7 +218,9 @@ while True:
                 # Display Gemma2's response
                 window['chat_output'].print(f"Gemma2: {gemma_formatted_response}")
                 
-                # Send Gemma2's response to the tag classification system
+                # Send Gemma2's response to the tag classification system for immediate action
                 window.write_event_value('-RESPONSE-', gemma_formatted_response)
             except Exception as e:
                 window['chat_output'].print(f"Error: {str(e)}")
+
+window.close()
