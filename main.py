@@ -89,7 +89,7 @@ def windows_noise():
     winsound.MessageBeep(winsound.MB_ICONHAND)
 
 def click():
-    for i in range(random.randint(1, 20)):
+    for i in range(random.randint(5, 20)):
         pyautogui.click()
 
 def popup_window():
@@ -102,7 +102,7 @@ def key_press():
     pyautogui.press('enter')
 
 def random_key_press():
-    for i in range(random.randint(1, 20)):
+    for i in range(random.randint(5, 25)):
         pyautogui.typewrite(random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'))
 
 # Function to take a screenshot and save it with a unique name
