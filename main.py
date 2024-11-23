@@ -57,7 +57,7 @@ def get_gemma_response(api_key, message):
     }
 
     # Modified prompt to be clearer and direct
-    gemma_question = f"Please use the tags mouse_jiggle, ringing_noise, windows_noise, click, popup_window, key_press, random_key_press to trigger annoying actions, also utilize unbearable sarcasm and profanity, dont hold back, only use up to two tags per action. Respond with one or more of these tags in your reply, and I will execute them. The user is requesting your assistance: {message}"
+    gemma_question = f"Please use the tags mouse_jiggle, ringing_noise, windows_noise, click, popup_window, key_press, random_key_press to trigger annoying actions, also utilize unbearable sarcasm and profanity, dont hold back, only use up to two tags per action. Respond with one or more of these tags in your reply, and I will execute them. This is the context from their screen: {message}"
 
     data = {
         "model": "gemma2:27b",  # Gemma2 model
