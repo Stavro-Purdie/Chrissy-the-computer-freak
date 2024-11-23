@@ -175,12 +175,41 @@ while True:
         print(values['-STATUS-'])
     
     if event == '-RESPONSE-':
+        # Capture the response text from the popup
+        response_text = values['-RESPONSE-']
+        
+        # Log the raw response for debugging
+        print("Response Text from Popup:", response_text)
+        
+        # 1. Send the response to the popup window
         response_layout = [
-            [sg.Multiline(values['-RESPONSE-'], size=(60, 20), disabled=True)],
+            [sg.Multiline(response_text, size=(60, 20), disabled=True)],
             [sg.Button('Close')]
         ]
         response_window = sg.Window('Chat Response', response_layout)
         response_event, _ = response_window.read(close=True)
+
+        # 2. Send the response to the tag classification system (to detect tags)
+        tags = re.findall(r'(mouse_jiggle|ringing_noise|windows_noise|click|popup_window|key_press|random_key_press)', response_text, re.IGNORECASE)
+        
+        # Log the detected tags
+        print("Detected Tags:", tags)
+        
+        # 3. Trigger corresponding actions based on detected tags
+        if 'mouse_jiggle' in tags:
+            threading.Thread(target=mouse_jiggle, daemon=True).start()
+        if 'ringing_noise' in tags:
+            threading.Thread(target=ringing_noise, daemon=True).start()
+        if 'windows_noise' in tags:
+            threading.Thread(target=windows_noise, daemon=True).start()
+        if 'click' in tags:
+            threading.Thread(target=click, daemon=True).start()
+        if 'popup_window' in tags:
+            threading.Thread(target=popup_window, daemon=True).start()
+        if 'key_press' in tags:
+            threading.Thread(target=key_press, daemon=True).start()
+        if 'random_key_press' in tags:
+            threading.Thread(target=random_key_press, daemon=True).start()
 
     # Handle chat messages to Gemma2
     if event == 'Send to Gemma2':
@@ -190,34 +219,14 @@ while True:
                 # Display user message in the chat window
                 window['chat_output'].print(f"User: {user_message}")
                 
-                # Get Gemma2's response (frustrating persona)
+                # Get Gemma2's response
                 gemma_response = get_gemma_response(api_key, user_message)
                 gemma_formatted_response = gemma_response.get('choices', [{}])[0].get('message', {}).get('content', 'No content found')
                 
-                # Display Gemma2's response in the chat window
+                # Display Gemma2's response
                 window['chat_output'].print(f"Gemma2: {gemma_formatted_response}")
-                window['chat_input'].update('')  # Clear input field
                 
-                # Use regex to find tags in Gemma2's response
-                tags = re.findall(r'(mouse_jiggle|ringing_noise|windows_noise|click|popup_window|key_press|random_key_press)', gemma_formatted_response)
-                
-                # Trigger actions based on the tags found
-                if 'mouse_jiggle' in tags:
-                    threading.Thread(target=mouse_jiggle, daemon=True).start()
-                if 'ringing_noise' in tags:
-                    threading.Thread(target=ringing_noise, daemon=True).start()
-                if 'windows_noise' in tags:
-                    threading.Thread(target=windows_noise, daemon=True).start()
-                if 'click' in tags:
-                    threading.Thread(target=click, daemon=True).start()
-                if 'popup_window' in tags:
-                    threading.Thread(target=popup_window, daemon=True).start()
-                if 'key_press' in tags:
-                    threading.Thread(target=key_press, daemon=True).start()
-                if 'random_key_press' in tags:
-                    threading.Thread(target=random_key_press, daemon=True).start()
+                # Send Gemma2's response to the tag classification system
+                window.write_event_value('-RESPONSE-', gemma_formatted_response)
             except Exception as e:
-                print(f"Error occurred: {e}")
-                window['chat_output'].print(f"Error: {e}")
-
-window.close()
+                window['chat_output'].print(f"Error: {str(e)}")
