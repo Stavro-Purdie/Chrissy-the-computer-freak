@@ -1,7 +1,7 @@
 # Man VS AI
 This LLM powered program serves to target the user with the most annoying distractions based off screenshots taken periodically. The aim is to surpass these distractions for as long as possible. Good Luck!
 
-
+![Alt text](/screenshot.png "Screenshot of Program")
 ## SETUP
 
 To set this program up you will need to set up Open-WebUI and then edit `main.py` to change API Key, Models used and the URI of the Open-WebUI server.
