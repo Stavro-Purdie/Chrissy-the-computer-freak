@@ -1,4 +1,4 @@
-# Chrissy-the-computer-freak
+# Man VS AI
 This LLM powered program serves to target the user with the most annoying distractions based off screenshots taken periodically. The aim is to surpass these distractions for as long as possible. Good Luck!
 
 
